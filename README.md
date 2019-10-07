@@ -9,27 +9,28 @@ Then install the [Heroku Toolbelt](https://toolbelt.heroku.com/). It is a comman
 After installing the Heroku Toolbelt, open a terminal and login to your account:
 ```bash
 $ heroku login
-Enter your Heroku credentials.
-Email: jakhax@herokudeploying.com
-Password (typing will be hidden):
+Enter your Heroku details.
+Email:herokuregistration@herokudeployment.com <Enter Your Own Email>
+Password <Heroku password>
 Authentication successful.
 ```
 
 # Preparing the Application
-In this tutorial I will deploy an existing project, [world of comicon](https://github.com/jakhax/comicon-gallery.git).
-It's an very simple open-source Django project, a personal gallery for sharing photos of superheros and villains based on category and location.
-Its available on [github](https://github.com/jakhax/comicon-gallery.git) so you can actually clone the repository and follow along or try it on your own existing django project.
+In this tutorial I will deploy an existing project, [Picture Globe](https://github.com/Owiti-Charles/Picture-Globe)
 
-## Assumptions
-* Your familiar with the basics of django e.g concept of apps, settings, urls, basics of databases 
-* You have django application that you want to deploy to heroku
-* You are familiar with virtual environments - not a must but the knowledge would be a plus
+## You must
+* Have asics of django concept ie apps, settings, urls, basics of databases eg  
+* Have django application that you want to deploy to heroku
+* Be familiar with working with virtual environments 
 * Your deployment db is postgres
+
 ### tested django versions
 * django 1.11
-* django 2.0.7
+* django 2.2.5
 
-We need to add the following to our project, we will cover each of them in detail in the below section
+## Ready to start deployment 
+
+We need to add the following to our project.
 
 * Add a `Procfile` in the project root;
 * Add `requirements.txt` file with all the requirements in the project root;
@@ -42,15 +43,15 @@ Heroku apps include a `Procfile` that specifies the commands that are executed b
 
 For more information read on the [heroku documentation](https://devcenter.heroku.com/articles/procfile).
 
-Create a file named `Procfile` in the project root with the following content:
+Create a file named `Procfile` in the project root then add:
 ```
-web: gunicorn your_project_name.wsgi --log-file -
+web: gunicorn your_project_name.wsgi
 ```
 
 ## Runtime.txt
-This file contains the python version you are using for heroku to use, create `runtime.txt` in your project root and add your python version in the following format
+This file contains the python version you are using for heroku to use, create `runtime.txt` in your project root and add your python version.
 ```
-python-3.6.4
+python-3.6.8 <Replace with your current python version.>
 ```
 List of [Heroku Python Runtimes](https://devcenter.heroku.com/articles/python-runtimes).
 
@@ -89,25 +90,8 @@ Add the following setting to `settings.py` in the static files section to enable
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-```
-## Requirements.txt
-If your under a virtual environment run the command below to generate the requirements.txt file which heroku will use to install python package dependencies 
 
-`pip freeze > requirements.txt`
-Make sure you have the following packages if not install the using pip then run the command above again
 ```
-dj-database-url==0.4.2
-Django==2.0.2
-dj-static==0.0.6
-gunicorn==19.7.1
-psycopg2-binary==2.7.4
-python-decouple==3.1
-unicodecsv==0.14.1
-whitenoise==3.3.1
-Unipath==1.0
-```
-If you are following along with the World Of Comicon app you should use the provided requirements.txt as you need to install more python packages, for any app just make sure you have the above packages as a plus.
-
 ## Optional but very helpfull settings
 ### python-decouple and dj-database-url
 Python Decouple is a must have app if you are developing with Django. It’s important to keep your application credentials like API Keys, Amazon S3, email parameters, database parameters safe, specially if it’s an open source repository. Also no more development_settings.py and production_settings.py, use just one settings.py for your whole project.
@@ -118,18 +102,38 @@ dj-database-url is a simple Django utility allows you to utilize the 12factor in
 
 Install it via `pip install dj-database-url`
 
+## Requirements.txt
+If your under a virtual environment run the command below to generate the requirements.txt file which heroku will use to install python package dependencies 
+
+`pip freeze > requirements.txt`
+Make sure you have the following packages if not install the using pip then run the command above again
+```
+dj-database-url==0.5.0
+Django==1.11.5
+gunicorn==19.9.0
+Pillow==6.2.0
+pkg-resources==0.0.0 **A MUST Remove if present**
+psycopg2==2.8.3
+python-decouple==3.1
+pytz==2019.2
+whitenoise==4.1.4
+```
+If you are following along with the World Of Comicon app you should use the provided requirements.txt as you need to install more python packages, for any app just make sure you have the above packages as a plus.
+
 Firts create a `.env` file and add it to `.gitignore` so you don’t commit any sensitive data to your remote repository.
-below is an example of configurations you can add to the `.env` file.
+
+Then add the database url to your `.env` file in the following format `postgres://<username>:<password>@<address>:<port>/<database_name>`, see example below
+```bash
+DATABASE_URL='postgres://charles:1234@localhost:5432/articles'
+```
+- Then replace your database settings in `settings.py` with
+#### .env
 
 ```python
 #just an example, dont share your .env settings
+DATABASE_URL='postgres://charles:1234@localhost:5432/articles'
 SECRET_KEY='342s(s(!hsjd998sde8$=o4$3m!(o+kce2^97kp6#ujhi'
-DEBUG=True #set to false in production
-DB_NAME='gallery'
-DB_USER='user'
-DB_PASSWORD='(s(!hsjd998sde8$l263mk@we8$=o4$3m!(o+342s(s(!'
-DB_HOST='127.0.0.1'
-MODE='dev' #set to 'prod' in production
+DEBUG=True 
 ALLOWED_HOSTS='.localhost', '.herokuapp.com', '.127.0.0.1'
 ```
 
@@ -139,24 +143,11 @@ We then edit `settings.py` to enable decouple to use the `.env` configurations.
  import os
 import dj_database_url
 from decouple import config,Csv
-MODE=config("MODE", default="dev")
+
 SECRET_KEY = config('SECRET_KEY')
+
+
 DEBUG = config('DEBUG', default=False, cast=bool)
- # development
-if config('MODE')=="dev":
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': config('DB_NAME'),
-            'USER': config('DB_USER'),
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': config('DB_HOST'),
-            'PORT': '',
-        }
-        
-    }
-# production
-else:
     DATABASES = {
         'default': dj_database_url.config(
             default=config('DATABASE_URL')
@@ -174,12 +165,14 @@ First make sure you are in the root directory of the repository you want to depl
 
 Next create the heroku app
 ```bash
-heroku create worldofcomicon
+heroku create aerblog
 ```
 Create a postgres addon to your heroku app
 ```bash
 heroku addons:create heroku-postgresql:hobby-dev
 ```
+
+##### Set heroku configurations
 Next we log in to [Heroku dashboard](https://dashboard.heroku.com) to access our app and configure it
 
 <img src="https://imgur.com/rNuHbRE.png" alt="Heroku dashboard" width="600" height="500">
@@ -187,10 +180,14 @@ Next we log in to [Heroku dashboard](https://dashboard.heroku.com) to access our
 Click on the Settings menu and then on the button Reveal Config Vars:
 Next add all the environment vaiables, by default you should have `DATABASE_URI` configuration created after installing postgres to heroku.
 
-Alternatively you can add all your configurations in `.env` file directly to heroku by running the this command.
+###### Alternative
 
+On terminal 
 ```bash
-heroku config:set $(cat .env | sed '/^$/d; /#[[:print:]]*$/d')
+heroku config:set <Enter an item from your .env file>
+heroku config:set ALLOWED_HOSTS='*'
+SECRET_KEY=wlpwtk4q_ku##b#%-@mga!4!vj(rw1%ug$m&312a69oi=klr0#
+heroku config:set DEBUG=False
 ```
 Remember to first set `DEBUG` to false and confirm that you have added all the confuguration variables needed.
 
@@ -200,32 +197,39 @@ Remember to first set `DEBUG` to false and confirm that you have added all the c
 
 confirm that your application is running as expected before pushing, runtime errors will cause deployment to fail so make sure you have no bugs, you have all the following `Procfile`, `requirements.txt` with all required packages and  `runtime.txt` .
 
+##### Confirm App is working 
+On terminal
+
+```bash
+python manage.py runserver
+    or
+gunicorn <projectname>..wsgi 
+```
+
+### Pushing to heroku
 ```bash
 git push heroku master
 ```
 If you did everything correctly then the deployment should be done after a while with an output like this
 
 ```
-Counting objects: 1201, done.
-Delta compression using up to 4 threads.
-Compressing objects: 100% (616/616), done.
-Writing objects: 100% (1201/1201), 461.28 KiB | 0 bytes/s, done.
-Total 1201 (delta 1139), reused 1193 (delta 1131)
-remote: Compressing source files... done.
-remote: Building source:
-remote:
-remote: -----> Python app detected
-remote: -----> Installing python-3.6.4
-remote:      $ pip install -r requirements.txt
-
-...
-
+remote:          Running setup.py install for psycopg2: started
+remote:            Running setup.py install for psycopg2: finished with status 'done'
+remote:          Running setup.py install for python-decouple: started
+remote:            Running setup.py install for python-decouple: finished with status 'done'
+remote:        Successfully installed Django-1.11.5 Pillow-6.2.0 dj-database-url-0.5.0 gunicorn-19.9.0 psycopg2-2.8.3 python-decouple-3.1 pytz-2019.2 whitenoise-4.1.4
+remote: 
+remote: -----> Discovering process types
+remote:        Procfile declares types -> web
+remote: 
+remote: -----> Compressing...
+remote:        Done: 52.8M
 remote: -----> Launching...
-remote:        Released v5
-remote:        https://worldofcomicon.herokuapp.com/ deployed to Heroku
-remote:
-remote: Verifying deploy.... done.
-To https://git.heroku.com/worldofcomicon.git
+remote:        Released v9
+remote:        https://areblog.herokuapp.com/ deployed to Heroku
+remote: 
+remote: Verifying deploy... done.
+To https://git.heroku.com/areblog.git
  * [new branch]      master -> master
  ```
 
@@ -233,31 +237,15 @@ To https://git.heroku.com/worldofcomicon.git
  ```bash
  heroku run python manage.py migrate
 ```
-
+### If you wish to push your local database **My preferred method**
 If you instead wish to push your postgres database data to heroku then run
 ```bash
-heroku pg:push mylocaldb DATABASE_URI --app worldofcomicon
+heroku pg:push <db_name> DATABASE_URL --app <heroku_app_name>
+eg heroku pg:push <db_name> DATABASE_URL --app <heroku_app_name>
 ```
-You can the open the app in your browser [worldofcomicon](https://worldofcomicon.herokuapp.com/)
+You can the open the app in your browser [blog](https://areblog.herokuapp.com/)
 
 # Comment
-This process was a lot and you can easily mess up as I did, I suggest analyzing the part where you went wrong and going back to read on what you are supposed to do. I also highly recommend going through official documentations about deploying python projects to heroku as you will get a lot information that can help you debug effectively. I will provide some links in the resources section.
-
-Remember heroku does not offer support for media files in the free tier subscription so find some where else to store those e.g Amazon s3.
-
-# Resources
-## heroku Docs
-* https://devcenter.heroku.com/articles/heroku-postgresql
-* https://devcenter.heroku.com/articles/django-assets
-* https://devcenter.heroku.com/articles/python-runtimes
-* https://devcenter.heroku.com/articles/procfile
-* https://devcenter.heroku.com/articles/getting-started-with-python#introduction
-* https://devcenter.heroku.com/articles/deploying-python
-* https://devcenter.heroku.com/articles/django-app-configuration
-* https://devcenter.heroku.com/articles/python-gunicorn
-
-## very helpfull articles
-* https://simpleisbetterthancomplex.com/tutorial/2016/08/09/how-to-deploy-django-applications-on-heroku.html
-* https://simpleisbetterthancomplex.com/2015/11/26/package-of-the-week-python-decouple.html
+This process is easy to follow but requres you to be keen while dealing with the process.
 
 
