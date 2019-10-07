@@ -175,7 +175,7 @@ heroku addons:create heroku-postgresql:hobby-dev
 ##### Set heroku configurations
 Next we log in to [Heroku dashboard](https://dashboard.heroku.com) to access our app and configure it
 
-<img src="https://imgur.com/rNuHbRE.png" alt="Heroku dashboard" width="600" height="500">
+<img src="" alt="Heroku dashboard" width="600" height="500">
 
 Click on the Settings menu and then on the button Reveal Config Vars:
 Next add all the environment vaiables, by default you should have `DATABASE_URI` configuration created after installing postgres to heroku.
@@ -191,7 +191,7 @@ heroku config:set DEBUG=False
 ```
 Remember to first set `DEBUG` to false and confirm that you have added all the confuguration variables needed.
 
-<img src="https://imgur.com/rFxZbRf.png" alt="Heroku dashboard" width="700" height="500">
+<img src="" alt="Heroku dashboard" width="700" height="500">
 
 ### pushing to heroku
 
