@@ -191,7 +191,7 @@ heroku config:set DEBUG=False
 ```
 Remember to first set `DEBUG` to false and confirm that you have added all the confuguration variables needed.
 
-<img src="" alt="Heroku dashboard" width="700" height="500">
+<img src="https://raw.githubusercontent.com/Owiti-Charles/heroku_deployment/master/deployment/herokuconfig.png?token=AMKWM2GPOQQCHVOP5P7E3WS5TORWQ" alt="Heroku dashboard" width="700" height="500">
 
 ### pushing to heroku
 
@@ -211,6 +211,8 @@ gunicorn <projectname>..wsgi
 git push heroku master
 ```
 If you did everything correctly then the deployment should be done after a while with an output like this
+
+<img src="https://raw.githubusercontent.com/Owiti-Charles/heroku_deployment/master/deployment/Screenshot%20from%202019-10-07%2022-56-37.png?token=AMKWM2HQXSUIDJ7OBDALW2C5TORMI" alt="Heroku dashboard" width="600" height="500">
 
 ```
 remote:          Running setup.py install for psycopg2: started
