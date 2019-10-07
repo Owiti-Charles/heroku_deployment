@@ -16,7 +16,7 @@ Authentication successful.
 ```
 
 # Preparing the Application
-In this tutorial I will deploy an existing project, [Picture Globe](https://github.com/Owiti-Charles/Picture-Globe)
+In this tutorial I will deploy an existing project, [Django Blog](https://github.com/Owiti-Charles/django_blog)
 
 ## You must
 * Have asics of django concept ie apps, settings, urls, basics of databases eg  
@@ -245,7 +245,11 @@ eg heroku pg:push <db_name> DATABASE_URL --app <heroku_app_name>
 ```
 You can the open the app in your browser [blog](https://areblog.herokuapp.com/)
 
-# Comment
+## Comment
 This process is easy to follow but requres you to be keen while dealing with the process.
+
+### For colaboration
+
+email me at [mikeycharlesm7@gmail.com](mikeycharlesm7@gmail.com)
 
 
