@@ -118,7 +118,7 @@ python-decouple==3.1
 pytz==2019.2
 whitenoise==4.1.4
 ```
-If you are following along with the World Of Comicon app you should use the provided requirements.txt as you need to install more python packages, for any app just make sure you have the above packages as a plus.
+If you are following along with this process you should use the provided requirements.txt as you need to install more python packages, for any app just make sure you have the above packages as a plus.
 
 Firts create a `.env` file and add it to `.gitignore` so you don’t commit any sensitive data to your remote repository.
 
